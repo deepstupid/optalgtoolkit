@@ -1,0 +1,4 @@
+Manifest-Version: 1.4
+Created-By: Jason Brownlee
+Main-Class: com.oat.gui.launcher.LauncherMain
+Class-Path: lib/tsp.zip lib/gcp.zip lib/jcommon-1.0.5.jar lib/jfreechart-1.0.2.jar lib/osp_core_v1.0.4.jar lib/ThirdPartyJars.jar lib/commons-math-1.1.jar lib/SOCR_plugin.jar lib/SOCR_core.jar lib/ssj.jar lib/colt.jar

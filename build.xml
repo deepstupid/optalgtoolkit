@@ -1,0 +1,203 @@
+<!-- 
+Optimization Algorithm Toolkit (OAT)
+http://sourceforge.net/projects/optalgtoolkit
+Copyright (C) 2006, 2007  Jason Brownlee
+
+OAT is free software; you can redistribute it and/or modify it under the terms 
+of the GNU Lesser General Public License as published by the Free Software 
+Foundation; either version 3 of the License, or (at your option) any 
+later version.
+
+OAT is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for 
+more details.
+
+You should have received a copy of the GNU Lesser General Public License 
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Jason Brownlee
+Project Lead
+OAT (Optimization Algorithm Toolkit)
+http://sourceforge.net/projects/optalgtoolkit
+-->
+
+<!-- OAT Ant Build File -->
+
+<project name="OAT" default="dist" basedir=".">
+    <description>
+        OAT ant build file
+    </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="src"/>
+  <property name="lib" location="lib"/>
+  <property name="build" location="build"/>
+  <property name="dist"  location="dist"/>
+  <property name="web"  location="web"/>
+  <property name="ver"  value="1.4"/>
+  <property name="OAT"  value="optalgtoolkit"/>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+
+  </target>
+
+  <target name="compile" depends="init"
+        description="compile the source " >
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>  	
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src}" destdir="${build}">  	
+	  	<!-- ensure libs are in the classpath  -->
+	    <classpath>
+	      <fileset dir="${lib}">
+	        <include name="**/*.jar"/>
+		    <include name="**/*.zip"/>	      	
+	      </fileset>
+	    </classpath>  	    	
+    </javac>
+    <copy todir="${build}" >
+       <fileset dir="${src}">
+       	  <include name="bcr/**"/>
+       	  <include name="*.properties"/>
+       	  <include name="META-INF/**"/>
+       	  <include name="splash.jpg"/>
+       </fileset>
+    </copy>
+  </target>
+
+  <target name="dist" depends="compile"
+        description="generate the distribution" >
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}/${DSTAMP}"/>  	
+    <!-- prepare the jar -->
+    <jar jarfile="${dist}/${DSTAMP}/${OAT}.jar" basedir="${build}"
+    	manifest="${build}/META-INF/MANIFEST.MF"/>
+  	<!-- copy the libraries over -->
+  	<mkdir dir="${dist}/${DSTAMP}/lib"/>
+    <copy todir="${dist}/${DSTAMP}/lib" >
+       <fileset dir="${lib}">
+       	<include name="**/*.jar"/>
+       	<include name="**/*.zip"/>       	
+       </fileset>
+    </copy>
+  	<!-- copy the remaining release elements over -->
+    <copy todir="${dist}/${DSTAMP}" >
+       <fileset dir=".">
+       	<include name="*.txt"/>
+       </fileset>
+    </copy>
+  </target>
+	
+	
+  <target name="release_download" depends="source"
+        description="prepare the download release" >
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}/${DSTAMP}-release_download"/>
+    <!-- create the archive  -->
+  	<zip destfile="${dist}/${DSTAMP}-release_download/${OAT}${ver}.zip" basedir="${dist}/${DSTAMP}"/>
+  </target>
+	
+	
+  <target name="release_web" depends="dist, javadoc"
+        description="prepare web page content for deployment" >
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}/${DSTAMP}-web"/>
+  	<mkdir dir="${dist}/${DSTAMP}-web/applets"/>
+  	<mkdir dir="${dist}/${DSTAMP}-web/applets/lib"/>
+  	<mkdir dir="${dist}/${DSTAMP}-web/docs"/>
+  	<mkdir dir="${dist}/${DSTAMP}-web/pics"/>
+  	<mkdir dir="${dist}/${DSTAMP}-web/api"/>
+  	<!-- copy everything we want over into the source directory -->
+    <copy todir="${dist}/${DSTAMP}-web" >
+       <fileset dir="${web}">
+       	<include name="*.html"/>
+       </fileset>  
+    </copy>
+    <copy todir="${dist}/${DSTAMP}-web/api" >
+        <fileset dir="${dist}/${DSTAMP}-javadoc">
+          <include name="**/*"/>
+        </fileset>   
+    </copy>
+  	<copy todir="${dist}/${DSTAMP}-web/applets">
+        <fileset dir="${web}/applets">
+        	<include name="*.*"/>
+        </fileset>  		
+    </copy>    	  	
+    <copy todir="${dist}/${DSTAMP}-web/applets/lib" >      
+       <fileset dir="${lib}">
+        <include name="**/*.jar"/>
+        <include name="**/*.zip"/>       	
+       </fileset>
+       <fileset dir="${dist}/${DSTAMP}">
+         <include name="${OAT}.jar"/>
+       </fileset>    
+    </copy>
+  	
+  	<copy todir="${dist}/${DSTAMP}-web/pics">
+        <fileset dir="${web}/pics">
+         <include name="*.*"/>
+        </fileset>		
+    </copy>  
+  	<copy todir="${dist}/${DSTAMP}-web/docs">
+        <fileset dir="${web}/docs">
+         <include name="*.*"/>
+        </fileset>  
+    </copy> 
+  	
+  </target>	
+	
+	
+	
+  <target name="javadoc" depends="dist" description="Create OAT javadocs">
+        <mkdir dir="${dist}/${DSTAMP}-javadoc" />
+  	    <javadoc 
+  	    	access="public" 
+  	    	author="true" 
+  	    	classpath="lib/jfreechart-1.0.2.jar;lib/junit-4.2.jar;lib/osp_core_v1.0.4.jar;lib/SOCR_plugin.jar;lib/ThirdPartyJars.jar;lib/colt.jar;lib/tsp.zip;lib/jcommon-1.0.5.jar;lib/SOCR_core.jar;lib/commons-math-1.1.jar;lib/ssj.jar;lib/gcp.zip" 
+  	    	destdir="${dist}/${DSTAMP}-javadoc"
+  	    	nodeprecated="false" 
+  	    	nodeprecatedlist="false" 
+  	    	noindex="false" 
+  	    	nonavbar="false" 
+  	    	notree="false" 
+  	    	packagenames="com.oat.*" 
+  	    	sourcepath="src" 
+  	    	splitindex="false" 
+  	    	use="false" 
+  	    	version="true"/>  	
+  </target>		
+	
+	
+  <target name="source" depends="dist"
+        description="prepare the source code for distribution, assuming it builds the dist ok" >
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}/${DSTAMP}-source"/>
+  	<!-- copy everything we want over into the source directory -->
+    <copy todir="${dist}/${DSTAMP}-source" >
+       <fileset dir=".">
+       	<include name="src/**/*"/>
+       	<include name="*.txt"/>
+       	<include name="readme.txt"/>
+       	<include name="build.xml"/>
+       </fileset>
+    </copy>
+    <!-- create the archive  -->
+  	<zip destfile="${dist}/${DSTAMP}/${OAT}${ver}-src.zip" 
+  	     basedir="${dist}/${DSTAMP}-source"/>
+  </target>	
+	
+	
+  <target name="clean" depends="init"
+        description="clean up" >
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  	<delete dir="${dist}/${DSTAMP}-source"/>
+  	<delete dir="${dist}/${DSTAMP}-release_download"/>
+  	<delete dir="${dist}/${DSTAMP}-web"/>
+  	<delete dir="${dist}/${DSTAMP}-javadoc"/>
+  </target>
+	
+</project>

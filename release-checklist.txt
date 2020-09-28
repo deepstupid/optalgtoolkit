@@ -1,0 +1,32 @@
+This file contains a check-list of tasks to perform before the software can be released.
+
+
+Unit Test Check List
+-------------------------------------------------------------------------------
+1. Execute all junit unit tests in com.oat.junit
+
+
+Example Check List
+-------------------------------------------------------------------------------
+1. Execute all examples in com.oat.explorer.examples
+2. Execute all examples in com.oat.experimenter.examples
+
+
+Execution Check List
+-------------------------------------------------------------------------------
+1. Execute from a windowing system (for example MS Windows or Mac OSX)
+2. Execute from the command line
+3. Execute from the command line with Proxy information
+4. Execute launcher manually
+5. Execute explorer manually
+6. Execute specialized explorers manually
+7. Execute experimenter manually
+8. Execute each Applet 
+
+
+Third Party Check List
+-------------------------------------------------------------------------------
+1. Execute launcher with added algorithm and problem instances
+2. Execute launcher with added domain
+
+ 
